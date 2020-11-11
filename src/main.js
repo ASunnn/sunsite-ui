@@ -3,16 +3,16 @@ import VueRouter from "vue-router";
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import App from './App.vue'
-import Login from "./template/Login.vue";
-import Index from "./template/Index.vue"
-import Gallery from "./template/Gallery";
-import Illustrator from "./template/Illustrator";
-import Circle from "./template/Circle";
-import Collection from "./template/Collection";
-import Type from "./template/Type";
-import Post from "./template/Post";
-import Upload from "./template/Upload";
-import Create from "./template/Create";
+import Login from "./views/Login.vue";
+import Index from "./views/Index.vue"
+import Gallery from "./views/Gallery";
+import Illustrator from "./views/Illustrator";
+import Circle from "./views/Circle";
+import Collection from "./views/Collection";
+import Type from "./views/Type";
+import Post from "./views/Post";
+import Upload from "./views/Upload";
+import Create from "./views/Create";
 
 Vue.use(VueRouter);
 Vue.use(ElementUI, { size: 'small'});
@@ -55,7 +55,7 @@ const router = new VueRouter({
             name: "type",
             component: Type
         }, {
-            path: path + "/post",
+            path: path + "/post/:seq",
             name: "post",
             component: Post
         }, {
