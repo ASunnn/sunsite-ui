@@ -44,6 +44,18 @@
     .modal {
         .el-dialog {
             width: 90%;
+            .el-dialog__header {
+                padding: 0;
+            }
+            .el-dialog__body {
+                padding: 20px 15px 10px;
+                .el-divider--horizontal {
+                    margin: 0;
+                }
+            }
+            .el-dialog__footer {
+                padding: 5px 20px 15px;
+            }
         }
         @media (min-width: 768px) {
             .el-dialog {

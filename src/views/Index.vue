@@ -11,7 +11,7 @@
             </el-menu>
         </el-header>
         <el-main class="main">
-            <el-col :md="{span: 20, offset: 2}" :sm="24">
+            <el-col :xl="{span: 20, offset: 2}" :lg="{span: 22, offset: 1}" :md="24">
                 <router-view></router-view>
             </el-col>
         </el-main>
@@ -42,13 +42,20 @@
         .menu {
             padding: 0 20px;
 
+            .menu-title {
+                font-size: large;
+            }
+            .menu-item {
+                font-size: revert;
+            }
+
             .el-menu-item {
+                text-decoration: none;
                 transition: none;
                 a {
                     text-decoration: none;
                 }
             }
-
             .el-menu--horizontal>.el-menu-item.is-active {
                 border-bottom: none;
             }
@@ -56,7 +63,7 @@
     }
 
     .main {
-        padding: 0 20px 55px 20px;
+        padding: 0 20px 30px 20px;
         min-height: calc(100vh - 81px);
         position: relative;
     }

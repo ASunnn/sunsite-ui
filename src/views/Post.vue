@@ -1,15 +1,15 @@
 <template>
-    <div class="post">
+    <div class="post with-footer">
         <div class="image">
             <el-image :src="src" ref="img" @load="imageLoad">
                 <div slot="error">
                     <i class="el-icon-picture-outline"></i>
                 </div>
             </el-image>
-            <div class="prev area" :style="{'height': navigateHeight}" @click="nextPost(false)">
+            <div v-if="prev" class="prev area" :style="{'height': navigateHeight}" @click="nextPost(false)">
                 <i class="el-icon-arrow-left" :style="{'line-height': navigateHeight}"></i>
             </div>
-            <div class="next area" :style="{'height': navigateHeight}" @click="nextPost(true)">
+            <div v-if="next" class="next area" :style="{'height': navigateHeight}" @click="nextPost(true)">
                 <i class="el-icon-arrow-right" :style="{'line-height': navigateHeight}"></i>
             </div>
         </div>
@@ -41,8 +41,8 @@
             <span @click="onDelete">Delete</span>
         </bottom>
 
-        <modal :show="showModifyModal" @submit="onModalSubmit" @close="onModalClose">
-            <el-form label-position="right" label-width="100px" :model="modifyForm">
+        <modal :show="showModifyModal" @submit="onModalSubmit" @close="showModifyModal = false">
+            <el-form class="modify-form" label-position="right" label-width="100px" :model="modifyForm">
                 <el-form-item label="Name">
                     <el-input v-model="modifyForm.name"></el-input>
                 </el-form-item>
@@ -55,8 +55,10 @@
 </template>
 
 <script>
+    import axios from "../utils/axios";
     import Bottom from "../components/Bottom";
     import Modal from "../components/Modal";
+    import urls from "../utils/urls";
 
     export default {
         name: "Post",
@@ -92,15 +94,18 @@
 
         created: function () {
             this.seq = this.$route.params.seq;
+            // this.src = urls("/p/" + this.seq);
             this.init();
         },
 
         mounted: function () {
             window.onresize = this.imageLoad;
+            window.onkeydown = this.keyDown;
         },
 
         destroyed: function () {
             window.onresize = null;
+            window.onkeydown = null;
         },
 
         watch: {
@@ -112,27 +117,51 @@
 
         methods: {
             init: function () {
-                this.name = this.seq + ".jpg";
-                this.circle = "circle" + this.seq;
-                this.collection = "collection" + this.seq;
-                this.illustrators = ["a", "b", "c"];
-                this.size = this.seq + "kb";
-                this.width = this.seq;
-                this.height = this.seq;
+                const self = this;
+                axios.get("/gallery/" + this.seq).then(function (data) {
+                    self.name = data.name;
+                    self.circle = data.group;
+                    self.cId = data.cId;
+                    self.collection = data.collection;
+                    self.illustrators = data.illustrator;
+                    self.size = data.size;
+                    self.width = data.width;
+                    self.height = data.height;
 
-                this.modifyForm.name = this.name;
-                this.modifyForm.illustrators = this.illustrators;
+                    self.prev = data.prev == -1 ? null : data.prev;
+                    self.next = data.next == -1 ? null : data.next;
+
+                    self.modifyForm.name = data.name;
+                    self.modifyForm.illustrators = data.illustrator;
+                });
             },
 
             imageLoad: function (e) {
                 this.navigateHeight = this.$refs.img.$el.offsetHeight + "px";
             },
 
+            keyDown: function (e) {
+                let key = e.key;
+                switch (key) {
+                    case "ArrowLeft":
+                        if (this.prev)
+                            this.nextPost(false);
+                        break;
+                    case "ArrowRight":
+                        if (this.next)
+                            this.nextPost(true);
+                        break;
+                    case "Delete":
+                        this.onDelete(true);
+                        break;
+                }
+            },
+
             nextPost: function (next) {
                 if (next) {
-                    this.$router.push({name:"post", params:{seq: this.seq + 1}});
+                    this.$router.push({name:"post", params:{seq: this.next}});
                 } else {
-                    this.$router.push({name:"post", params:{seq: this.seq - 1}});
+                    this.$router.push({name:"post", params:{seq: this.prev}});
                 }
             },
 
@@ -154,16 +183,13 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    console.log("ok")
+                    axios.post();
                 }).catch(() => {
                 });
             },
 
             onModalSubmit: function () {
-                console.log(this.modifyForm)
-            },
-
-            onModalClose: function () {
+                axios.post();
                 this.showModifyModal = false;
             }
         }
@@ -246,10 +272,17 @@
             .illustrator {
                 padding: 5px 10px;
                 border-radius: 5px;
+                background-color: #f4f4f5;
                 &:hover {
                     cursor: pointer;
-                    background-color: #f4f4f5;
+                    background-color: #e9e9eb;
                 }
+            }
+        }
+
+        .modify-form {
+            .el-input__inner {
+                padding: 0 10px;
             }
         }
     }

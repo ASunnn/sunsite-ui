@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="upload">
         <el-form ref="form" :model="form" label-width="80px">
             <el-form-item label="Illustrator">
                 <el-input v-model="form.illustrator" placeholder="illustrator"></el-input>
@@ -14,7 +14,7 @@
                 <el-button type="primary" @click="upload">Submit</el-button>
             </el-form-item>
         </el-form>
-        <el-col :span="24">
+        <el-col>
             <el-upload :auto-upload="false" :on-change="refreshFiles" action="/index" drag multiple>
                 <div class="upload-tip">将图片拖到此处，或点击上传</div>
             </el-upload>
@@ -135,35 +135,45 @@
 </script>
 
 <style lang="less">
-    .el-upload {
-        width: 100%;
-    }
+    .upload {
 
-    .el-upload-dragger {
-        width: 100%;
-        height: 100px;
-    }
+        .el-upload {
+            width: 100%;
 
-    .v-modal {
-        opacity: 0.3;
-    }
+            .el-upload-dragger {
+                width: 100%;
+                height: 100px;
+            }
 
-    .el-dialog__header {
-        padding: 0;
-    }
+            .upload-tip {
+                font-size: 20px;
+                margin-top: 10px;
+                color: #777;
+            }
+        }
 
-    .el-dialog__body {
-        padding: 15px 15px 0 15px;
-        .dialog_divider {
-            margin: 15px 0 0 0;
+        .v-modal {
+            opacity: 0.3;
+        }
+
+        .el-dialog__header {
+            padding: 0;
+        }
+
+        .el-dialog__body {
+            padding: 15px 15px 0 15px;
+            .dialog_divider {
+                margin: 15px 0 0 0;
+            }
+        }
+
+        .el-dialog__footer {
+            padding: 5px 0;
+            .dialog_button {
+                margin: 4px 12px 4px 0;
+                padding: 6px 12px;
+            }
         }
     }
 
-    .el-dialog__footer {
-        padding: 5px 0;
-        .dialog_button {
-            margin: 4px 12px 4px 0;
-            padding: 6px 12px;
-        }
-    }
 </style>

@@ -1,10 +1,11 @@
 <template>
-    <div>
-    </div>
+    <pic-list url="/gallery/list"></pic-list>
 </template>
 
 <script>
+    import PicList from "../components/PicList";
     export default {
+        components: {PicList}
     }
 </script>
 

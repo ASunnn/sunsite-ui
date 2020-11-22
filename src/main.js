@@ -17,6 +17,7 @@ import Create from "./views/Create";
 Vue.use(VueRouter);
 Vue.use(ElementUI, { size: 'small'});
 
+window.host = "http://localhost:8086";
 window.path = "";
 
 const router = new VueRouter({
@@ -73,4 +74,4 @@ const router = new VueRouter({
 new Vue({
     router,
     render: h => h(App)
-}).$mount('#app')
+}).$mount('#app');
