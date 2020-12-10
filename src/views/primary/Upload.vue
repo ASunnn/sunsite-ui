@@ -1,13 +1,13 @@
 <template>
     <div class="upload">
-        <el-form ref="form" :model="form" label-width="80px">
-            <el-form-item label="Illustrator">
+        <el-form ref="form" :model="form" :rules="rule" label-width="100px">
+            <el-form-item label="Illustrator" prop="illustrator">
                 <el-input v-model="form.illustrator" placeholder="illustrator"></el-input>
             </el-form-item>
-            <el-form-item label="Circle">
+            <el-form-item label="Circle" prop="circle">
                 <el-input v-model="form.circle" placeholder="circle"></el-input>
             </el-form-item>
-            <el-form-item label="Collection">
+            <el-form-item label="Collection" prop="collection">
                 <el-input v-model="form.collection" placeholder="collection"></el-input>
             </el-form-item>
             <el-form-item>
@@ -37,7 +37,8 @@
 </template>
 
 <script>
-    import axios from "axios";
+    import axios from "../../utils/axios";
+    import Axios from "axios";
 
     export default {
         data() {
@@ -47,9 +48,16 @@
                     circle: "",
                     collection: ""
                 },
+                rule: {
+                    circle: [
+                        {required: true, message: ' ', trigger: 'blur'}
+                    ],
+                    collection: [
+                        {required: true, message: ' ', trigger: 'blur'}
+                    ]
+                },
                 files: [],
                 // 上传相关
-                config: null,
                 uploading: false,
                 progress: 0,
                 isComplete: false,
@@ -64,11 +72,23 @@
 
             upload: function() {
                 const self = this;
+                this.$refs.form.validate((vaild) => {
+                    if (vaild) {
+                        self.doUpload();
+                    }
+                });
+            },
 
-                const CancelToken = axios.CancelToken;
+            doUpload: function() {
+                const self = this;
+
+                this.progress = 0;
+
+                const CancelToken = Axios.CancelToken;
                 this.cancel = CancelToken.source();
-                this.config = {
+                let opts = {
                     headers:{'Content-Type':'multipart/form-data'},
+                    data: this.getUploadData(),
                     cancelToken: this.cancel.token,
                     onUploadProgress: function(e) {
                         if (e.lengthComputable) {
@@ -78,34 +98,30 @@
                         }
                     }
                 };
-
-                axios.post(path + "/gallery/upload", this.getUploadData(), this.config)
-                    .then(function(response) {
-                        let data = response.data;
-
-                        if (data.code === 0) {
-                            self.progress = 100;
-                            self.isComplete = true;
-                            self.$notify({
-                                message: data.msg,
-                                type: 'success'
-                            });
-                        } else {
-                            self.$notify({
-                                message: data.msg + " : " + data.detail,
-                                type: "warning"
-                            });
-                        }
-                    }).catch(function(error) {
-                        if (axios.isCancel(error)) {
-                            // console.log("冇事发生");
-                            return;
-                        }
-                        self.$notify.error({
-                            message: error.message
-                        });
+                axios.post("/gallery/upload", opts, true).then(function(data) {
+                    if (data.code === 0) {
                         self.progress = 100;
+                        self.isComplete = true;
+                        self.$notify({
+                            message: data.msg,
+                            type: "success"
+                        });
+                    } else {
+                        self.$notify({
+                            message: data.msg,
+                            type: "warning"
+                        });
+                    }
+                }).catch(function(error) {
+                    if (Axios.isCancel(error)) {
+                        // console.log("冇事发生");
+                        return;
+                    }
+                    self.$notify.error({
+                        message: error.message
                     });
+                    self.progress = 100;
+                });
 
                 this.uploading = true;
             },
@@ -115,7 +131,7 @@
                 this.files.forEach(function(val, key) {
                     formData.append("file", val.raw);
                 });
-                formData.append("illustrator", this.form.illustrator);
+                formData.append("illustrator", this.form.illustrator ? this.form.illustrator.split("，") : []);
                 formData.append("group", this.form.circle);
                 formData.append("collection", this.form.collection);
 

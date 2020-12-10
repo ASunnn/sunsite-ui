@@ -55,10 +55,11 @@
 </template>
 
 <script>
-    import axios from "../utils/axios";
-    import Bottom from "../components/Bottom";
-    import Modal from "../components/Modal";
-    import urls from "../utils/urls";
+    import axios from "../../utils/axios";
+    import Bottom from "../../components/Bottom";
+    import Modal from "../../components/Modal";
+    import qs from "querystring";
+    import urls from "../../utils/urls";
 
     export default {
         name: "Post",
@@ -68,8 +69,7 @@
         data() {
             return {
                 seq: "",
-                src: "https://cdn.wallpaperhub.app/cloudcache/0/d/c/e/3/7/0dce3731051ad7faec97269c52b44489817d3698.jpg",
-                // src: "http://sjbz.fd.zol-img.com.cn/t_s1080x1920c/g6/M00/07/01/ChMkKV-g-_2IG-TAAD9-OV4E0KsAAEuvQAAAAAAP35R190.jpg",
+                src: "",
                 name: "",
                 size: "",
                 width: "",
@@ -78,7 +78,7 @@
                 circle: "",
                 cId: "",
                 collection: "",
-                illustrators: "",
+                illustrators: [],
 
                 prev: "",
                 next: "",
@@ -94,7 +94,6 @@
 
         created: function () {
             this.seq = this.$route.params.seq;
-            // this.src = urls("/p/" + this.seq);
             this.init();
         },
 
@@ -132,8 +131,9 @@
                     self.next = data.next == -1 ? null : data.next;
 
                     self.modifyForm.name = data.name;
-                    self.modifyForm.illustrators = data.illustrator;
+                    self.modifyForm.illustrators = data.illustrator.join("，");
                 });
+                this.src = urls("/p/" + this.seq);
             },
 
             imageLoad: function (e) {
@@ -141,6 +141,9 @@
             },
 
             keyDown: function (e) {
+                if (this.showModifyModal)
+                    return;
+
                 let key = e.key;
                 switch (key) {
                     case "ArrowLeft":
@@ -178,18 +181,53 @@
             },
 
             onDelete: function () {
+                const self = this;
                 this.$confirm("Delete?", {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post();
+                    let opts = {
+                        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                        data: qs.stringify({sequence: self.seq})
+                    };
+                    axios.post("/gallery/delete", opts).then(function (data) {
+                        self.$notify({
+                            message: data.msg,
+                            type: "success"
+                        });
+                        if (self.next) {
+                            self.$router.push({name:"post", params:{seq: self.next}});
+                        } else if (self.prev) {
+                            self.$router.push({name:"post", params:{seq: self.prev}});
+                        } else {
+                            self.$router.push(path + "/gallery");
+                        }
+                    });
                 }).catch(() => {
                 });
             },
 
             onModalSubmit: function () {
-                axios.post();
+                const self = this;
+
+                let opts = {
+                    data: {
+                        sequence: this.seq,
+                        name: this.modifyForm.name,
+                        illustrators: this.modifyForm.illustrators ? this.modifyForm.illustrators.split("，") : []
+                    }
+                };
+                axios.post("/gallery/modify", opts).then(function (data) {
+                    self.$notify({
+                        message: data.msg,
+                        type: "success"
+                    });
+                    if (self.seq == data.newLink)
+                        self.init();
+                    else
+                        self.$router.push({name:"post", params:{seq: data.newLink}});
+                });
                 this.showModifyModal = false;
             }
         }
@@ -273,6 +311,7 @@
                 padding: 5px 10px;
                 border-radius: 5px;
                 background-color: #f4f4f5;
+                margin: 0 5px;
                 &:hover {
                     cursor: pointer;
                     background-color: #e9e9eb;

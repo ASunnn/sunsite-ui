@@ -1,26 +1,25 @@
 <template>
-    <div class="pic-list">
+    <div class="preview-list">
         <el-row class="list">
-            <template v-for="p in list">
-                <pic-item :seq="p.sequence" :src="src(p.sequence)" :alt="alt(p)" :title="title(p)"></pic-item>
+            <template v-for="l in list">
+                <preview-item :type="type" :item="l"></preview-item>
             </template>
         </el-row>
-        <pager :page="page" :count="count" @page-click="getPictureList"></pager>
+        <pager :page="page" :count="count" @page-click="getItemList"></pager>
     </div>
 </template>
 
 <script>
     import axios from "../utils/axios";
     import Pager from "./Pager";
-    import PicItem from "./PicItem";
-    import urls from "../utils/urls";
+    import PreviewItem from "./PreviewItem";
 
     export default {
-        name: "PicList",
+        name: "PreviewList",
 
-        components: {Pager, PicItem},
+        components: {Pager, PreviewItem},
 
-        props: ["url", "params"],
+        props: ["url", "params", "type"],
 
         data() {
             return {
@@ -31,40 +30,30 @@
         },
 
         mounted: function () {
-            this.getPictureList(0);
+            this.getItemList(0);
         },
 
         methods: {
-            getPictureList: function (page) {
+            getItemList: function (page) {
                 const self = this;
 
                 let opts = {
                     params: Object.assign({p: page}, this.params)
                 };
                 axios.get(this.url, opts).then(function (data) {
-                    let pictureList = data.pictureList;
-                    self.list = self.list.concat(pictureList);
+                    let list = data.list;
+                    self.list = self.list.concat(list);
 
                     self.page = page;
                     self.count = data.pageCount;
                 });
             },
-
-            src: function (seq) {
-                return urls("/m/" + seq);
-            },
-            alt: function (p) {
-                return p.name + " / " + p.collection + " / " + p.group;
-            },
-            title: function (p) {
-                return p.name + " / " + p.collection + " / " + p.group;
-            }
         }
     }
 </script>
 
 <style lang="less">
-    .pic-list {
+    .preview-list {
         .list {
             margin: auto;
         }

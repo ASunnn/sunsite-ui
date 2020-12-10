@@ -3,12 +3,12 @@
 </template>
 
 <script>
-    import PicList from "../components/PicList";
+    import PicList from "../../components/PicList";
     export default {
         components: {PicList}
     }
 </script>
 
-<style scoped>
+<style lang="less">
 
 </style>

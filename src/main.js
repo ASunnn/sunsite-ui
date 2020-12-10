@@ -5,14 +5,14 @@ import 'element-ui/lib/theme-chalk/index.css';
 import App from './App.vue'
 import Login from "./views/Login.vue";
 import Index from "./views/Index.vue"
-import Gallery from "./views/Gallery";
-import Illustrator from "./views/Illustrator";
-import Circle from "./views/Circle";
-import Collection from "./views/Collection";
-import Type from "./views/Type";
-import Post from "./views/Post";
-import Upload from "./views/Upload";
-import Create from "./views/Create";
+import Gallery from "./views/primary/Gallery";
+import Illustrator from "./views/secondary/Illustrator";
+import Circle from "./views/secondary/Circle";
+import Collection from "./views/secondary/Collection";
+import Type from "./views/secondary/Type";
+import Post from "./views/primary/Post";
+import Upload from "./views/primary/Upload";
+import Create from "./views/primary/Create";
 
 Vue.use(VueRouter);
 Vue.use(ElementUI, { size: 'small'});
