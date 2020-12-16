@@ -47,7 +47,7 @@
                     self.page = page;
                     self.count = data.pageCount;
                 });
-            },
+            }
         }
     }
 </script>

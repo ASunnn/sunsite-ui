@@ -41,6 +41,8 @@
     import Axios from "axios";
 
     export default {
+        name: "Upload",
+
         data() {
             return {
                 form: {

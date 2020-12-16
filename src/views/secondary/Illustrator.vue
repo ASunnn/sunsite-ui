@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="illustrator">
         <preview-list url="/illustrator/list" type="illustrator"></preview-list>
     </div>
 </template>
@@ -14,6 +14,6 @@
     }
 </script>
 
-<style scoped>
+<style>
 
 </style>

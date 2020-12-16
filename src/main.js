@@ -5,14 +5,18 @@ import 'element-ui/lib/theme-chalk/index.css';
 import App from './App.vue'
 import Login from "./views/Login.vue";
 import Index from "./views/Index.vue"
-import Gallery from "./views/primary/Gallery";
+import Gallery from "./views/main/Gallery";
 import Illustrator from "./views/secondary/Illustrator";
+import Work from "./views/secondary/Work";
 import Circle from "./views/secondary/Circle";
+import Book from "./views/secondary/Book";
 import Collection from "./views/secondary/Collection";
+import Pool from "./views/secondary/Pool";
 import Type from "./views/secondary/Type";
-import Post from "./views/primary/Post";
-import Upload from "./views/primary/Upload";
-import Create from "./views/primary/Create";
+import List from "./views/secondary/List";
+import Post from "./views/main/Post";
+import Upload from "./views/main/Upload";
+import Create from "./views/main/Create";
 
 Vue.use(VueRouter);
 Vue.use(ElementUI, { size: 'small'});
@@ -44,17 +48,33 @@ const router = new VueRouter({
             name: "illustrator",
             component: Illustrator
         }, {
+            path: path + "/work",
+            name: "work",
+            component: Work
+        }, {
             path: path + "/circle",
             name: "circle",
             component: Circle
+        }, {
+            path: path + "/book/:name",
+            name: "book",
+            component: Book
         }, {
             path: path + "/collection",
             name: "collection",
             component: Collection
         }, {
+            path: path + "/pool/:seq",
+            name: "pool",
+            component: Pool
+        }, {
             path: path + "/type",
             name: "type",
             component: Type
+        }, {
+            path: path + "/list",
+            name: "list",
+            component: List
         }, {
             path: path + "/post/:seq",
             name: "post",

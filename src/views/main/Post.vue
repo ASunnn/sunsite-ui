@@ -29,7 +29,7 @@
                 <span class="type">collection</span>
             </div>
             <div>
-                <template v-for="i in illustrators">
+                <template v-for="i in illustrator">
                     <span class="illustrator" @click="onIllustratorClick(i)">{{i}}</span>
                 </template>
             </div>
@@ -64,7 +64,7 @@
     export default {
         name: "Post",
 
-        components: {Modal, Bottom},
+        components: {Bottom, Modal},
 
         data() {
             return {
@@ -78,7 +78,7 @@
                 circle: "",
                 cId: "",
                 collection: "",
-                illustrators: [],
+                illustrator: [],
 
                 prev: "",
                 next: "",
@@ -122,7 +122,7 @@
                     self.circle = data.group;
                     self.cId = data.cId;
                     self.collection = data.collection;
-                    self.illustrators = data.illustrator;
+                    self.illustrator = data.illustrator;
                     self.size = data.size;
                     self.width = data.width;
                     self.height = data.height;
@@ -180,11 +180,34 @@
                 console.log(illustrator);
             },
 
+            onModalSubmit: function () {
+                const self = this;
+
+                let opts = {
+                    data: {
+                        sequence: this.seq,
+                        name: this.modifyForm.name,
+                        illustrator: this.modifyForm.illustrators ? this.modifyForm.illustrators.split("，") : []
+                    }
+                };
+                axios.post("/gallery/modify", opts).then(function (data) {
+                    self.$notify({
+                        message: data.msg,
+                        type: "success"
+                    });
+                    if (self.seq == data.newLink)
+                        self.init();
+                    else
+                        self.$router.push({name:"post", params:{seq: data.newLink}});
+                });
+                this.showModifyModal = false;
+            },
+
             onDelete: function () {
                 const self = this;
                 this.$confirm("Delete?", {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No',
                     type: 'warning'
                 }).then(() => {
                     let opts = {
@@ -206,29 +229,6 @@
                     });
                 }).catch(() => {
                 });
-            },
-
-            onModalSubmit: function () {
-                const self = this;
-
-                let opts = {
-                    data: {
-                        sequence: this.seq,
-                        name: this.modifyForm.name,
-                        illustrators: this.modifyForm.illustrators ? this.modifyForm.illustrators.split("，") : []
-                    }
-                };
-                axios.post("/gallery/modify", opts).then(function (data) {
-                    self.$notify({
-                        message: data.msg,
-                        type: "success"
-                    });
-                    if (self.seq == data.newLink)
-                        self.init();
-                    else
-                        self.$router.push({name:"post", params:{seq: data.newLink}});
-                });
-                this.showModifyModal = false;
             }
         }
     }
@@ -311,7 +311,8 @@
                 padding: 5px 10px;
                 border-radius: 5px;
                 background-color: #f4f4f5;
-                margin: 0 5px;
+                margin-right: 10px;
+                font-size: small;
                 &:hover {
                     cursor: pointer;
                     background-color: #e9e9eb;

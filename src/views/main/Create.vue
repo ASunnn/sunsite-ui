@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="create">
         <el-form ref="form" :model="form" :rules="rule" label-width="100px">
             <el-form-item label="Circle" prop="circle">
                 <el-input v-model="form.circle" placeholder="circle"></el-input>
@@ -21,6 +21,8 @@
     import axios from "../../utils/axios";
 
     export default {
+        name: "Create",
+
         data() {
             return {
                 form: {
@@ -72,6 +74,6 @@
     }
 </script>
 
-<style scoped>
+<style>
 
 </style>

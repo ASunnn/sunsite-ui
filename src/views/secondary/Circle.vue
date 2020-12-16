@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="circle">
         <preview-list url="/circle/list" type="circle"></preview-list>
     </div>
 </template>

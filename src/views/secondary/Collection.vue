@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="collection">
         <preview-list url="/collection/list" type="collection"></preview-list>
     </div>
 </template>
@@ -14,6 +14,6 @@
     }
 </script>
 
-<style scoped>
+<style>
 
 </style>

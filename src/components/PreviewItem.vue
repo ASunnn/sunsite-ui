@@ -1,8 +1,10 @@
 <template>
     <el-col class="preview-item" :lg="3" :md="4" :sm="6" :xs="12" @click="onClick">
         <div class="item">
-            <el-image class="img" :src="src" :title="name" fit="contain">
+            <el-image class="img" :style="{height: type === 'collection' ? '150px' : '175px'}"
+                      :src="src" :title="name" fit="contain" @click="onClick">
             </el-image>
+            <p v-if="type === 'collection'" class="title text">{{item.group}}</p>
             <p class="text">{{name}}</p>
         </div>
     </el-col>
@@ -25,10 +27,10 @@
             },
 
             src: function () {
-                if (this.type === "collection")
-                    return urls(`/${this.type}/m/${this.item.sequence}`);
-                else if (this.type === "circle")
+                if (this.type === "circle")
                     return urls(`/${this.type}/m/${this.item["group"]}`);
+                else if (this.type === "collection")
+                    return urls(`/${this.type}/m/${this.item.sequence}`);
                 else
                     return urls(`/${this.type}/m/${this.item[this.type]}`);
             }
@@ -37,9 +39,9 @@
         methods: {
             onClick: function () {
                 if (this.type === "collection") {
-                    // this.$router.push({name:"pool", params:{seq: this.seq}});
+                    this.$router.push({name:"pool", params:{seq: this.item.sequence}});
                 } else {
-                    // this.$router.push({name:"post", params:{seq: this.seq}});
+                    this.$router.push({name:"book", params:{name: this.item["group"]}});
                 }
             }
         }
@@ -56,23 +58,27 @@
             border-radius: 3px;
             background-color: #f4f4f5;
             text-align: center;
-            height: 200px;
+            height: 205px;
             transition: 0.3s all;
             &:hover {
                 background-color: #e9e9eb;
             }
 
             .img {
-                height: 170px;
+                height: 175px;
                 .el-image__inner {
-                    max-height: 170px;
+                    max-height: 175px;
                 }
+            }
+
+            .title {
+                font-weight: bold
             }
 
             .text {
                 font-size: small;
                 margin: 0;
-                line-height: 30px;
+                line-height: 25px;
                 overflow: hidden;
                 white-space: nowrap;
             }
