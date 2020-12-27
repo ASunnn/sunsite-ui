@@ -1,8 +1,10 @@
 <template>
     <el-col class="pic-item" :lg="3" :md="4" :sm="6" :xs="12">
         <div class="item">
-            <el-image class="img" :src="src" :alt="alt" :title="title" fit="contain" @click="onClick">
-            </el-image>
+            <router-link :to="link">
+                <el-image class="img" :src="src" :alt="alt" :title="title" fit="contain">
+                </el-image>
+            </router-link>
         </div>
     </el-col>
 </template>
@@ -13,9 +15,10 @@
 
         props: ["seq", "src", "alt", "title"],
 
-        methods: {
-            onClick: function () {
-                this.$router.push({name:"post", params:{seq: this.seq}});
+        computed: {
+            link: function () {
+                return {name:"post", params:{seq: this.seq}};
+                // this.$router.push();
             }
         }
     }
@@ -32,7 +35,7 @@
             height: 180px;
             text-align: center;
             .img {
-                cursor: pointer;
+                /*cursor: pointer;*/
                 .el-image__inner {
                     max-height: 180px;
                 }

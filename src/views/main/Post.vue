@@ -1,15 +1,15 @@
 <template>
     <div class="post with-footer">
         <div class="image">
-            <el-image :src="src" ref="img" @load="imageLoad">
+            <el-image :src="src" ref="img" @load="imageLoad" @error="imageError">
                 <div slot="error">
                     <i class="el-icon-picture-outline"></i>
                 </div>
             </el-image>
-            <div v-if="prev" class="prev area" :style="{'height': navigateHeight}" @click="nextPost(false)">
+            <div v-if="prev && showNavigate" class="prev area" :style="{'height': navigateHeight}" @click="nextPost(false)">
                 <i class="el-icon-arrow-left" :style="{'line-height': navigateHeight}"></i>
             </div>
-            <div v-if="next" class="next area" :style="{'height': navigateHeight}" @click="nextPost(true)">
+            <div v-if="next && showNavigate" class="next area" :style="{'height': navigateHeight}" @click="nextPost(true)">
                 <i class="el-icon-arrow-right" :style="{'line-height': navigateHeight}"></i>
             </div>
         </div>
@@ -83,6 +83,7 @@
                 prev: "",
                 next: "",
                 navigateHeight: 0,
+                showNavigate: true,
 
                 showModifyModal: false,
                 modifyForm: {
@@ -120,7 +121,7 @@
                 axios.get("/gallery/" + this.seq).then(function (data) {
                     self.name = data.name;
                     self.circle = data.group;
-                    self.cId = data.cId;
+                    self.cId = data.cid;
                     self.collection = data.collection;
                     self.illustrator = data.illustrator;
                     self.size = data.size;
@@ -136,8 +137,13 @@
                 this.src = urls("/p/" + this.seq);
             },
 
-            imageLoad: function (e) {
+            imageLoad: function () {
                 this.navigateHeight = this.$refs.img.$el.offsetHeight + "px";
+                this.showNavigate = true;
+            },
+
+            imageError: function () {
+                this.showNavigate = false;
             },
 
             keyDown: function (e) {
@@ -169,15 +175,15 @@
             },
 
             onCircleClick: function () {
-                console.log(this.circle);
+                this.$router.push({name:"book", params:{name: this.circle}});
             },
 
             onCollectionClick: function () {
-                console.log(this.cId);
+                this.$router.push({name:"pool", params:{seq: this.cId}});
             },
 
             onIllustratorClick: function (illustrator) {
-                console.log(illustrator);
+                this.$router.push({name:"work", params:{name: illustrator}});
             },
 
             onModalSubmit: function () {

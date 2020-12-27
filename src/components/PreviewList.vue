@@ -2,7 +2,7 @@
     <div class="preview-list">
         <el-row class="list">
             <template v-for="l in list">
-                <preview-item :type="type" :item="l"></preview-item>
+                <preview-item :type="type" :item="l" :draggable="draggable" @drag-files="onDragFiles"></preview-item>
             </template>
         </el-row>
         <pager :page="page" :count="count" @page-click="getItemList"></pager>
@@ -19,7 +19,7 @@
 
         components: {Pager, PreviewItem},
 
-        props: ["url", "params", "type"],
+        props: ["url", "params", "type", "draggable"],
 
         data() {
             return {
@@ -47,6 +47,10 @@
                     self.page = page;
                     self.count = data.pageCount;
                 });
+            },
+
+            onDragFiles: function (files, e) {
+                this.$emit("drag-files", files, e);
             }
         }
     }

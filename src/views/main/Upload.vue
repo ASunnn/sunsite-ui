@@ -11,7 +11,7 @@
                 <el-input v-model="form.collection" placeholder="collection"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="upload">Submit</el-button>
+                <el-button type="primary" @click="doUpload">Submit</el-button>
             </el-form-item>
         </el-form>
         <el-col>
@@ -19,29 +19,20 @@
                 <div class="upload-tip">将图片拖到此处，或点击上传</div>
             </el-upload>
         </el-col>
-
-        <el-dialog
-                :visible.sync="uploading"
-                width="30%"
-                top="10vh"
-                :show-close="false"
-                :close-on-press-escape="false">
-            <el-progress :text-inside="true" :stroke-width="20" :percentage="progress" color="#909399"></el-progress>
-            <el-divider class="dialog_divider"></el-divider>
-            <span slot="footer" class="dialog-footer">
-                <el-button class="dialog_button" v-show="!isComplete" @click="cancelUpload">Cancel</el-button>
-                <el-button class="dialog_button" v-show="isComplete" type="primary" @click="completeUpload">OK</el-button>
-            </span>
-        </el-dialog>
+        <progress-bar :show="uploading" :percentage="progress" :complete="isComplete" @cancel="cancelUpload" @complete="completeUpload"></progress-bar>
     </div>
 </template>
 
 <script>
-    import axios from "../../utils/axios";
-    import Axios from "axios";
+    import ProgressBar from "../../components/Progress";
+    import Uploader from "../../mixin/Uploader";
 
     export default {
         name: "Upload",
+
+        components: {ProgressBar},
+
+        mixins: [Uploader],
 
         data() {
             return {
@@ -58,12 +49,7 @@
                         {required: true, message: ' ', trigger: 'blur'}
                     ]
                 },
-                files: [],
-                // 上传相关
-                uploading: false,
-                progress: 0,
-                isComplete: false,
-                cancel: null
+                files: []
             }
         },
 
@@ -72,60 +58,13 @@
                 this.files = fileList;
             },
 
-            upload: function() {
+            doUpload: function() {
                 const self = this;
                 this.$refs.form.validate((vaild) => {
                     if (vaild) {
-                        self.doUpload();
+                        self.upload(self.getUploadData());
                     }
                 });
-            },
-
-            doUpload: function() {
-                const self = this;
-
-                this.progress = 0;
-
-                const CancelToken = Axios.CancelToken;
-                this.cancel = CancelToken.source();
-                let opts = {
-                    headers:{'Content-Type':'multipart/form-data'},
-                    data: this.getUploadData(),
-                    cancelToken: this.cancel.token,
-                    onUploadProgress: function(e) {
-                        if (e.lengthComputable) {
-                            self.progress = parseInt(((e.loaded / e.total) * 100).toFixed());
-                        } else {
-                            self.progress = 100;
-                        }
-                    }
-                };
-                axios.post("/gallery/upload", opts, true).then(function(data) {
-                    if (data.code === 0) {
-                        self.progress = 100;
-                        self.isComplete = true;
-                        self.$notify({
-                            message: data.msg,
-                            type: "success"
-                        });
-                    } else {
-                        self.$notify({
-                            message: data.msg,
-                            type: "warning"
-                        });
-                    }
-                }).catch(function(error) {
-                    if (Axios.isCancel(error)) {
-                        // console.log("冇事发生");
-                        return;
-                    }
-                    self.$notify.error({
-                        message: error.message
-                    });
-                    self.progress = 100;
-                });
-
-                this.uploading = true;
             },
 
             getUploadData: function() {
@@ -170,28 +109,8 @@
             }
         }
 
-        .v-modal {
-            opacity: 0.3;
-        }
-
-        .el-dialog__header {
-            padding: 0;
-        }
-
-        .el-dialog__body {
-            padding: 15px 15px 0 15px;
-            .dialog_divider {
-                margin: 15px 0 0 0;
-            }
-        }
-
-        .el-dialog__footer {
-            padding: 5px 0;
-            .dialog_button {
-                margin: 4px 12px 4px 0;
-                padding: 6px 12px;
-            }
-        }
+        /*.v-modal {*/
+        /*    opacity: 0.3;*/
+        /*}*/
     }
-
 </style>

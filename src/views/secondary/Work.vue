@@ -1,12 +1,12 @@
 <template>
-    <div class="book with-footer">
+    <div class="work with-footer">
         <div class="head">
             <el-row class="head-line">
                 <el-col :span="20">
                     <span class="title">{{name}}</span>
                 </el-col>
                 <el-col :span="4">
-                    <span class="more">{{book}}</span>
+                    <span class="more">{{post}}</span>
                 </el-col>
             </el-row>
             <el-row class="head-line">
@@ -16,13 +16,12 @@
                 <span class="more">{{lastUpdate}}</span>
             </el-row>
         </div>
-        <preview-list url="/collection/listByGroup" :params="{n: name}" type="collection" :draggable="true" @drag-files="onDragFiles"></preview-list>
+        <pic-list url="/gallery/listByIllustrator" :params="{n: name}"></pic-list>
         <bottom>
             <span @click="showModifyModal = true">Modify</span>
             <el-divider direction="vertical"></el-divider>
             <span @click="onDelete">Delete</span>
         </bottom>
-        <progress-bar :show="uploading" :percentage="progress" :complete="isComplete" @cancel="cancelUpload" @complete="completeUpload"></progress-bar>
         <modal :show="showModifyModal" @submit="onModalSubmit" @close="showModifyModal = false">
             <el-form class="modify-form" label-position="right" label-width="100px" :model="modifyForm">
                 <el-form-item label="Name">
@@ -40,23 +39,19 @@
     import axios from "../../utils/axios";
     import Bottom from "../../components/Bottom";
     import Modal from "../../components/Modal";
-    import PreviewList from "../../components/PreviewList";
-    import ProgressBar from "../../components/Progress";
+    import PicList from "../../components/PicList";
     import time from "../../utils/time";
-    import Uploader from "../../mixin/Uploader";
 
     export default {
-        name: "Book",
+        name: "Work",
 
-        components: {Bottom, Modal, PreviewList, ProgressBar},
-
-        mixins: [Uploader],
+        components: {Bottom, Modal, PicList},
 
         data() {
             return {
                 name: "",
                 alias: [],
-                book: "",
+                post: "",
                 lastUpdate: "",
 
                 showModifyModal: false,
@@ -82,60 +77,14 @@
         methods: {
             init: function () {
                 const self = this;
-                axios.get("/circle/" + this.name).then(function (data) {
+                axios.get("/illustrator/" + this.name).then(function (data) {
                     self.alias = data.alias;
-                    self.book = data.book;
+                    self.post = data.post;
                     self.lastUpdate = time(data.lastUpdate);
 
                     self.modifyForm.name = self.name;
                     self.modifyForm.aliases = data.alias.join("，");
                 });
-            },
-
-            onDragFiles: function (files, e) {
-                let target = e.path.find(function (p) {
-                    return p.className === "item" || p.className === "item drag";
-                });
-
-                if (target) {
-                    // 拿到上传的collection
-                    let collection = target.childNodes[2].innerText;
-
-                    this.$prompt("Illustrator：", {
-                        showClose: false,
-                        showCancelButton: false,
-                        inputValue: this.name
-                    }).then(({ value }) => {
-                        this.doUpload(files, value, this.name, collection);
-                    }).catch(() => {});
-                } else {
-                    this.$notify({
-                        message: "Invalid Target",
-                        type: "warning"
-                    });
-                }
-            },
-
-            doUpload: function (files, illustrator, circle, collection) {
-                let formData = new FormData();
-                files.forEach(function(f) {
-                    formData.append("file", f);
-                });
-                formData.append("illustrator", illustrator ? illustrator.split("，") : []);
-                formData.append("group", circle);
-                formData.append("collection", collection);
-
-                this.upload(formData);
-            },
-
-            cancelUpload: function() {
-                this.cancel.cancel();
-                this.uploading = false;
-            },
-
-            completeUpload: function() {
-                this.uploading = false;
-                this.isComplete = false;
             },
 
             onModalSubmit: function () {
@@ -146,7 +95,7 @@
                         alias: this.modifyForm.aliases ? this.modifyForm.aliases.split("，") : []
                     }
                 };
-                axios.post("/circle/modify/" + this.name, opts).then(function (data) {
+                axios.post("/illustrator/modify/" + this.name, opts).then(function (data) {
                     self.$notify({
                         message: data.msg,
                         type: "success"
@@ -154,7 +103,7 @@
                     if (self.name == data.newLink)
                         self.init();
                     else
-                        self.$router.push({name:"book", params:{name: data.newLink}});
+                        self.$router.push({name:"work", params:{name: data.newLink}});
                 });
                 this.showModifyModal = false;
             },
@@ -166,12 +115,12 @@
                     cancelButtonText: 'No',
                     type: 'warning'
                 }).then(() => {
-                    axios.post("/circle/delete/" + this.name).then(function (data) {
+                    axios.post("/illustrator/delete/" + this.name).then(function (data) {
                         self.$notify({
                             message: data.msg,
                             type: "success"
                         });
-                        self.$router.push(path + "/circle");
+                        self.$router.push(path + "/illustrator");
                     });
                 }).catch(() => {
                 });
@@ -181,7 +130,7 @@
 </script>
 
 <style lang="less">
-    .book {
+    .work {
         .head {
             margin-bottom: 10px;
             .head-line {

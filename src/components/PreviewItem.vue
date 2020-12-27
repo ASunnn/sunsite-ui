@@ -1,11 +1,14 @@
 <template>
-    <el-col class="preview-item" :lg="3" :md="4" :sm="6" :xs="12" @click="onClick">
-        <div class="item">
-            <el-image class="img" :style="{height: type === 'collection' ? '150px' : '175px'}"
-                      :src="src" :title="name" fit="contain" @click="onClick">
-            </el-image>
-            <p v-if="type === 'collection'" class="title text">{{item.group}}</p>
-            <p class="text">{{name}}</p>
+    <el-col class="preview-item" :lg="3" :md="4" :sm="6" :xs="12">
+        <div class="item" :class="{'drag': onDrag}"
+             @dragenter="onDragenter" @dragleave="onDragleave" @drop="onDrop" @dragover="onDragover">
+            <router-link :to="link">
+                <el-image class="img" :style="{height: type === 'collection' ? '150px' : '175px'}"
+                          :src="src" :title="name" fit="contain">
+                </el-image>
+                <p v-if="type === 'collection'" class="title text">{{item.group}}</p>
+                <p class="text">{{name}}</p>
+            </router-link>
         </div>
     </el-col>
 </template>
@@ -16,7 +19,14 @@
     export default {
         name: "PreviewItem",
 
-        props: ["type", "item"],
+        props: ["type", "item", "draggable"],
+
+        data() {
+            return {
+                onDrag: false,
+                dragStack: 0
+            }
+        },
 
         computed: {
             name: function () {
@@ -24,6 +34,20 @@
                     return this.item["group"];
                 else
                     return this.item[this.type];
+            },
+
+
+            link: function () {
+                if (this.type === "collection") {
+                    return {name:"pool", params:{seq: this.item.sequence}};
+                    // this.$router.push();
+                } else if (this.type === "circle") {
+                    return {name:"book", params:{name: this.item["group"]}};
+                    // this.$router.push();
+                } else {
+                    return {name:"work", params:{name: this.item[this.type]}};
+                    // this.$router.push();
+                }
             },
 
             src: function () {
@@ -37,12 +61,38 @@
         },
 
         methods: {
-            onClick: function () {
-                if (this.type === "collection") {
-                    this.$router.push({name:"pool", params:{seq: this.item.sequence}});
-                } else {
-                    this.$router.push({name:"book", params:{name: this.item["group"]}});
-                }
+            // 拖拽相关
+            onDragenter: function (e) {
+                if (!this.draggable) return;
+                e.stopPropagation();
+                e.preventDefault();
+
+                ++this.dragStack;
+                this.onDrag = true;
+            },
+            onDragleave: function (e) {
+                if (!this.draggable) return;
+                e.stopPropagation();
+                e.preventDefault();
+
+                --this.dragStack;
+                if (this.dragStack <= 0)
+                    this.onDrag = false;
+            },
+            onDrop: function (e) {
+                if (!this.draggable) return;
+                e.stopPropagation();
+                e.preventDefault();
+
+                this.$emit("drag-files", e.dataTransfer.files, e);
+                this.dragStack = 0;
+                this.onDrag = false;
+            },
+            // 想要让一个元素变成可释放区域，该元素必须设置 ondragover 和 ondrop 事件处理程序属性
+            onDragover: function (e) {
+                if (!this.draggable) return;
+                e.stopPropagation();
+                e.preventDefault();
             }
         }
     }
@@ -62,6 +112,17 @@
             transition: 0.3s all;
             &:hover {
                 background-color: #e9e9eb;
+            }
+
+            &.drag {
+                background-color: #909399;
+            }
+
+            a {
+                color: #606266;
+                &:hover {
+                    text-decoration: none;
+                }
             }
 
             .img {

@@ -2,7 +2,7 @@
     <div class="type">
         <template v-for="d in data">
             <el-col class="block" :lg="8" :sm="12" :xs="24">
-                <div class="content">
+                <div class="content" @click="click(d.type)">
                     <p class="title">{{d.type}}</p>
                     <p class="time">{{d.lastUpdate}}</p>
                 </div>
@@ -28,6 +28,12 @@
             axios.get("/type/list").then(function (data) {
                 self.data = data.list;
             });
+        },
+
+        methods: {
+            click: function (type) {
+                this.$router.push({name:"list", params:{name: type}});
+            }
         }
     }
 </script>

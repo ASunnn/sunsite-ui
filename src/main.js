@@ -48,7 +48,7 @@ const router = new VueRouter({
             name: "illustrator",
             component: Illustrator
         }, {
-            path: path + "/work",
+            path: path + "/work/:name",
             name: "work",
             component: Work
         }, {
@@ -72,7 +72,7 @@ const router = new VueRouter({
             name: "type",
             component: Type
         }, {
-            path: path + "/list",
+            path: path + "/list/:name",
             name: "list",
             component: List
         }, {
