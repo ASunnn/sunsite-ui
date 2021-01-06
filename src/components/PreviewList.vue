@@ -33,6 +33,15 @@
             this.getItemList(0);
         },
 
+        watch: {
+            params: function () {
+                // clear
+                this.list = [];
+                // get
+                this.getItemList(0);
+            }
+        },
+
         methods: {
             getItemList: function (page) {
                 const self = this;

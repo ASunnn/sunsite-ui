@@ -34,6 +34,15 @@
             this.getPictureList(0);
         },
 
+        watch: {
+            params: function () {
+                // clear
+                this.list = [];
+                // get
+                this.getPictureList(0);
+            }
+        },
+
         methods: {
             getPictureList: function (page) {
                 const self = this;

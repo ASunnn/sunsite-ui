@@ -29,7 +29,7 @@
         },
 
         methods: {
-            submit: function() {
+            submit: function () {
                 this.$emit("submit");
             },
 
