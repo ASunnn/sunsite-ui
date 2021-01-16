@@ -1,23 +1,24 @@
 <template>
     <div class="gallery">
-        <div class="form">
-            <el-select class="form-item" style="width: 160px" v-model="form.orientation" @change="refresh" placeholder="Orientation" clearable>
-                <el-option label="Landscape" value="landscape"></el-option>
-                <el-option label="Portrait" value="portrait"></el-option>
-            </el-select>
-            <el-select style="width: 160px" v-model="form.type" @change="refresh" placeholder="Type" clearable>
-                <template v-for="t in typeList">
-                    <el-option :label="t.type" :value="t.type"></el-option>
-                </template>
-            </el-select>
-        </div>
-        <pic-list url="/gallery/list" :params="params"></pic-list>
+        <pic-list url="/gallery/list" :params="params">
+            <div class="form-content">
+                <el-select class="form-item edge" v-model="form.orientation" @change="refresh" placeholder="Orientation" clearable>
+                    <el-option label="Landscape" value="landscape"></el-option>
+                    <el-option label="Portrait" value="portrait"></el-option>
+                </el-select>
+                <el-select class="form-item" v-model="form.type" @change="refresh" placeholder="Type" clearable>
+                    <template v-for="t in typeList">
+                        <el-option :label="t.type" :value="t.type"></el-option>
+                    </template>
+                </el-select>
+            </div>
+        </pic-list>
     </div>
 </template>
 
 <script>
     import axios from "../../utils/axios";
-    import PicList from "../../components/PicList";
+    import PicList from "../../components/pic/PicList";
 
     export default {
         name: "Gallery",
@@ -55,11 +56,10 @@
 
 <style lang="less">
     .gallery {
-        .form {
-            margin-bottom: 5px;
-            .form-item {
-                margin-right: 15px;
-            }
+        .form-item {
+            width: 160px;
+            float: right;
+            margin-left: 15px;
         }
     }
 </style>

@@ -1,16 +1,17 @@
 <template>
     <div class="circle">
-        <div class="form">
-            <el-input style="width: 160px" v-model="form.name" placeholder="filter" @keyup.enter.native="refresh" autofocus="true">
-                <el-button slot="append" type="primary" @click="refresh">Go</el-button>
-            </el-input>
-        </div>
-        <preview-list url="/circle/list" :params="params" type="circle"></preview-list>
+        <preview-list url="/circle/list" :params="params" type="circle">
+            <div class="form-content">
+                <el-input class="form-item edge" v-model="form.name" placeholder="filter" @keyup.enter.native="refresh" ref="input">>
+                    <el-button slot="append" type="primary" @click="refresh">Go</el-button>
+                </el-input>
+            </div>
+        </preview-list>
     </div>
 </template>
 
 <script>
-    import PreviewList from "../../components/PreviewList";
+    import PreviewList from "../../components/pic/PreviewList";
 
     export default {
         name: "Circle",
@@ -24,6 +25,12 @@
                 },
                 params: {}
             }
+        },
+
+        mounted: function () {
+            this.$nextTick(() => {
+                this.$refs.input.focus();
+            });
         },
 
         methods: {
@@ -40,8 +47,10 @@
 
 <style lang="less">
     .circle {
-        .form {
-            margin-bottom: 5px;
+        .form-item {
+            width: 160px;
+            float: right;
+            margin-left: 15px;
         }
     }
 </style>

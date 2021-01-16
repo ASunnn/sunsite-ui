@@ -53,7 +53,7 @@
         height: 25px;
         width: 40%;
         text-align: center;
-        margin: 10px auto auto;
+        margin: 10px auto;
         padding: 2px;
         border: 1px solid #DCDFE6;
         border-radius: 15px;

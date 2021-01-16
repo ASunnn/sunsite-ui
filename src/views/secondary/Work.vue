@@ -39,7 +39,7 @@
     import axios from "../../utils/axios";
     import Bottom from "../../components/Bottom";
     import Modal from "../../components/Modal";
-    import PicList from "../../components/PicList";
+    import PicList from "../../components/pic/PicList";
     import time from "../../utils/time";
 
     export default {

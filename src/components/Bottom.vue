@@ -15,7 +15,8 @@
 <style lang="less">
     .footer {
         width: 100%;
-        position: absolute;
+        background-color: #ffffff;
+        position: fixed;
         left: 0;
         bottom: 0;
         box-shadow: 0 -1px 4px rgba(0, 21, 41, 0.08);

@@ -40,7 +40,7 @@
     import axios from "../../utils/axios";
     import Bottom from "../../components/Bottom";
     import Modal from "../../components/Modal";
-    import PreviewList from "../../components/PreviewList";
+    import PreviewList from "../../components/pic/PreviewList";
     import ProgressBar from "../../components/Progress";
     import time from "../../utils/time";
     import Uploader from "../../mixin/Uploader";

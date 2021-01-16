@@ -1,6 +1,6 @@
 {
     "name": "sunsite",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "private": true,
     "scripts": {
         "serve": "vue-cli-service serve",
@@ -12,8 +12,11 @@
         "core-js": "^3.6.5",
         "element-ui": "^2.13.2",
         "moment": "^2.29.1",
+        "nprogress": "^0.2.0",
+        "underscore": "^1.12.0",
         "vue": "^2.6.11",
-        "vue-router": "^3.2.0"
+        "vue-router": "^3.2.0",
+        "vuex": "^3.6.0"
     },
     "devDependencies": {
         "@vue/cli-plugin-babel": "~4.5.0",

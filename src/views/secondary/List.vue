@@ -23,7 +23,7 @@
 <script>
     import axios from "../../utils/axios";
     import Bottom from "../../components/Bottom";
-    import PreviewList from "../../components/PreviewList";
+    import PreviewList from "../../components/pic/PreviewList";
     import time from "../../utils/time";
 
     export default {

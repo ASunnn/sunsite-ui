@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    import PreviewList from "../../components/PreviewList";
+    import PreviewList from "../../components/pic/PreviewList";
 
     export default {
         name: "Collection",
