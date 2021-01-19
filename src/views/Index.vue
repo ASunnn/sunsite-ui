@@ -69,9 +69,10 @@
     }
 
     .main {
-        padding: 0 20px 30px 20px;
-        min-height: calc(100vh - 81px);
+        min-height: calc(100vh - 66px);
         position: relative;
+        /* 页面切换动画有时候会出现横向滚动条 */
+        overflow-x: hidden;
 
         .fade-transform-leave-active, .fade-transform-enter-active {
             transition: all 0.2s;

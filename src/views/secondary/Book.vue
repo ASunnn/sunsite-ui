@@ -99,7 +99,7 @@
 
                 if (target) {
                     // 拿到上传的collection
-                    let collection = target.childNodes[2].innerText;
+                    let collection = target.firstChild.childNodes[2].innerText; // div -> a -> p
 
                     this.$prompt("Illustrator：", {
                         showClose: false,
@@ -134,8 +134,12 @@
             },
 
             completeUpload: function() {
+                const self = this;
                 this.uploading = false;
-                this.isComplete = false;
+                // 点击确定进度条消失后 防止取消键那么快冒出来
+                setTimeout(function () {
+                    self.isComplete = false;
+                }, 150);
             },
 
             onModalSubmit: function () {
