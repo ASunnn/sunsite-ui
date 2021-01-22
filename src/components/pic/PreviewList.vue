@@ -6,7 +6,7 @@
         </div>
         <el-row class="list" v-loading="loading">
             <template v-for="l in list">
-                <preview-item :type="type" :item="l" :draggable="draggable" @drag-files="onDragFiles"></preview-item>
+                <preview-item :type="type" :item="l" :draggable="draggable" :redirect="redirect" @drag-files="onDragFiles"></preview-item>
             </template>
         </el-row>
         <pager :page="page" :count="count" @page-click="getItemList"></pager>
@@ -31,6 +31,7 @@
                 page: 0,
                 count: 0,
                 list: [],
+                redirect: false,
                 loading: false
             }
         },
@@ -61,6 +62,7 @@
                 axios.get(this.url, opts, true).then(function (data) {
                     if (data.code === 0) {
                         let list = data.list;
+                        // self.redirect = list.length === 1;
                         self.list = self.list.concat(list);
 
                         self.page = page;

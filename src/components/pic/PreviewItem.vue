@@ -19,7 +19,7 @@
     export default {
         name: "PreviewItem",
 
-        props: ["type", "item", "draggable"],
+        props: ["type", "item", "draggable", "redirect"],
 
         data() {
             return {
@@ -58,6 +58,11 @@
                 else
                     return urls(`/${this.type}/m/${this.item[this.type]}`);
             }
+        },
+
+        mounted: function () {
+            if (this.redirect)
+                this.$router.push(this.link);
         },
 
         methods: {
