@@ -36,17 +36,13 @@
                     return this.item[this.type];
             },
 
-
             link: function () {
                 if (this.type === "collection") {
                     return {name:"pool", params:{seq: this.item.sequence}};
-                    // this.$router.push();
                 } else if (this.type === "circle") {
                     return {name:"book", params:{name: this.item["group"]}};
-                    // this.$router.push();
                 } else {
                     return {name:"work", params:{name: this.item[this.type]}};
-                    // this.$router.push();
                 }
             },
 

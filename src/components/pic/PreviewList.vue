@@ -62,7 +62,7 @@
                 axios.get(this.url, opts, true).then(function (data) {
                     if (data.code === 0) {
                         let list = data.list;
-                        // self.redirect = list.length === 1;
+                        self.redirect = list.length === 1;
                         self.list = self.list.concat(list);
 
                         self.page = page;

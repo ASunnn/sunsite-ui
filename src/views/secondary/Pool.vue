@@ -18,7 +18,9 @@
                 </el-col>
             </el-row>
         </div>
-        <pic-list url="/gallery/listByCollection" :params="{seq: seq}"></pic-list>
+        <div :class="{'drag': onDrag}" class="list" @dragenter="onDragenter" @dragleave="onDragleave" @drop="onDrop" @dragover="onDragover">
+            <pic-list url="/gallery/listByCollection" :params="{seq: seq}"></pic-list>
+        </div>
         <bottom>
             <span @click="showModifyModal = true">Modify</span>
             <el-divider direction="vertical"></el-divider>
@@ -26,6 +28,7 @@
             <el-divider direction="vertical"></el-divider>
             <span @click="onDelete">Delete</span>
         </bottom>
+        <progress-bar :show="uploading" :percentage="progress" :complete="isComplete" @cancel="cancelUpload" @complete="completeUpload"></progress-bar>
         <modal :show="showModifyModal" @submit="onModalSubmit" @close="showModifyModal = false">
             <el-form class="modify-form" label-position="right" label-width="100px" :model="modifyForm">
                 <el-form-item label="Name">
@@ -41,13 +44,17 @@
     import Bottom from "../../components/Bottom";
     import Modal from "../../components/Modal";
     import PicList from "../../components/pic/PicList";
+    import ProgressBar from "../../components/Progress";
     import time from "../../utils/time";
+    import Uploader from "../../mixin/Uploader";
     import urls from "../../utils/urls";
 
     export default {
         name: "Pool",
 
-        components: {Bottom, Modal, PicList},
+        components: {Bottom, Modal, PicList, ProgressBar},
+
+        mixins: [Uploader],
 
         data() {
             return {
@@ -56,6 +63,9 @@
                 collection: "",
                 post: "",
                 lastUpdate: "",
+
+                onDrag: false,
+                dragStack: 0,
 
                 showModifyModal: false,
                 modifyForm: {
@@ -89,8 +99,65 @@
                 });
             },
 
+            // 拖拽相关
+            onDragenter: function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                ++this.dragStack;
+                this.onDrag = true;
+            },
+            onDragleave: function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                --this.dragStack;
+                if (this.dragStack <= 0)
+                    this.onDrag = false;
+            },
+            onDrop: function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                this.doUpload(e.dataTransfer.files);
+                this.dragStack = 0;
+                this.onDrag = false;
+            },
+            // 想要让一个元素变成可释放区域，该元素必须设置 ondragover 和 ondrop 事件处理程序属性
+            onDragover: function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+            },
+
             onCircleClick: function () {
                 this.$router.push({name:"book", params:{name: this.circle}});
+            },
+
+            doUpload: function (files) {
+                this.$prompt("Illustrator：", {
+                    showClose: false,
+                    showCancelButton: false,
+                    inputValue: this.circle
+                }).then(({ value }) => {
+                    let formData = new FormData();
+                    files.forEach(function(f) {
+                        formData.append("file", f);
+                    });
+                    formData.append("illustrator", value ? value.split("，") : []);
+                    formData.append("group", this.circle);
+                    formData.append("collection", this.collection);
+
+                    this.upload(formData);
+                }).catch(() => {});
+            },
+
+            cancelUpload: function() {
+                this.cancel.cancel();
+                this.uploading = false;
+            },
+
+            completeUpload: function() {
+                window.location.reload();
             },
 
             onModalSubmit: function () {
@@ -157,6 +224,14 @@
                     font-size: small;
                     line-height: 22px;
                 }
+            }
+        }
+
+        .list {
+            transition: 0.3s all;
+            border-radius: 8px;
+            &.drag {
+                background-color: #f4f4f5;
             }
         }
     }
