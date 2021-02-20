@@ -60,6 +60,15 @@
                 });
 
                 this.uploading = true;
+            },
+
+            cancelUpload: function() {
+                this.cancel.cancel();
+                this.uploading = false;
+            },
+
+            completeUpload: function() {
+                window.location.reload();
             }
         }
     }

@@ -77,15 +77,6 @@
                 formData.append("collection", this.form.collection);
 
                 return formData;
-            },
-
-            cancelUpload: function() {
-                this.cancel.cancel();
-                this.uploading = false;
-            },
-
-            completeUpload: function() {
-                window.location.reload();
             }
         }
     }

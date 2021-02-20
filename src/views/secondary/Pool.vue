@@ -151,15 +151,6 @@
                 }).catch(() => {});
             },
 
-            cancelUpload: function() {
-                this.cancel.cancel();
-                this.uploading = false;
-            },
-
-            completeUpload: function() {
-                window.location.reload();
-            },
-
             onModalSubmit: function () {
                 const self = this;
                 let opts = {

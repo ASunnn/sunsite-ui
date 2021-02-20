@@ -1,7 +1,7 @@
 <template>
     <el-col class="pic-item" :lg="3" :md="4" :sm="6" :xs="12">
         <div class="item">
-            <router-link :to="link">
+            <router-link :to="link" target="_blank">
                 <el-image class="img" :src="src" :alt="alt" :title="title" fit="contain">
                 </el-image>
             </router-link>
@@ -18,7 +18,6 @@
         computed: {
             link: function () {
                 return {name:"post", params:{seq: this.seq}};
-                // this.$router.push();
             }
         }
     }

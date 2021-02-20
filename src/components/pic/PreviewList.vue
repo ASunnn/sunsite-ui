@@ -82,8 +82,8 @@
                 });
             },
 
-            onDragFiles: function (files, e) {
-                this.$emit("drag-files", files, e);
+            onDragFiles: function (data, e) {
+                this.$emit("drag-files", data, e);
             }
         }
     }

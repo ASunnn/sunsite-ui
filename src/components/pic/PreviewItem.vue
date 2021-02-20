@@ -85,7 +85,7 @@
                 e.stopPropagation();
                 e.preventDefault();
 
-                this.$emit("drag-files", e.dataTransfer.files, e);
+                this.$emit("drag-files", e.dataTransfer, e);
                 this.dragStack = 0;
                 this.onDrag = false;
             },

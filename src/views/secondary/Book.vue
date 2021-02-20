@@ -92,7 +92,7 @@
                 });
             },
 
-            onDragFiles: function (files, e) {
+            onDragFiles: function (data, e) {
                 let target = e.path.find(function (p) {
                     return p.className === "item" || p.className === "item drag";
                 });
@@ -100,6 +100,7 @@
                 if (target) {
                     // 拿到上传的collection
                     let collection = target.firstChild.childNodes[2].innerText; // div -> a -> p
+                    let files = data.files;
 
                     this.$prompt("Illustrator：", {
                         showClose: false,
@@ -126,11 +127,6 @@
                 formData.append("collection", collection);
 
                 this.upload(formData);
-            },
-
-            cancelUpload: function() {
-                this.cancel.cancel();
-                this.uploading = false;
             },
 
             completeUpload: function() {

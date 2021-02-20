@@ -36,6 +36,17 @@
             }
         },
 
+        beforeMount: function () {
+            let formStorage = localStorage.getItem("filter");
+            if (formStorage) {
+                this.form = JSON.parse(formStorage);
+                this.params = {
+                    o: this.form.orientation,
+                    t: this.form.type
+                };
+            }
+        },
+
         mounted: function () {
             const self = this;
             axios.get("/type/list").then(function (data) {
@@ -45,6 +56,7 @@
 
         methods: {
             refresh: function () {
+                localStorage.setItem("filter", JSON.stringify(this.form));
                 this.params = {
                     o: this.form.orientation,
                     t: this.form.type
