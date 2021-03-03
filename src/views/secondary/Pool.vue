@@ -11,7 +11,7 @@
             </el-row>
             <el-row class="head-line">
                 <el-col :sm="18" :xs="12">
-                    <span class="circle" @click="onCircleClick">{{circle}}</span>
+                    <router-link class="circle" :to="toCircle"><span>{{circle}}</span></router-link>
                 </el-col>
                 <el-col :sm="6" :xs="12">
                     <span class="more">{{lastUpdate}}</span>
@@ -79,6 +79,12 @@
             this.init();
         },
 
+        computed: {
+            toCircle: function () {
+                return {name:"book", params:{name: this.circle}};
+            }
+        },
+
         watch: {
             $route(to, from) {
                 this.seq = to.params.seq;
@@ -129,14 +135,11 @@
                 e.preventDefault();
             },
 
-            onCircleClick: function () {
-                this.$router.push({name:"book", params:{name: this.circle}});
-            },
-
             doUpload: function (files) {
-                this.$prompt("Illustrator：", {
+                this.$prompt("Illustrator : ", {
                     showClose: false,
                     showCancelButton: false,
+                    confirmButtonText: 'OK',
                     inputValue: this.circle
                 }).then(({ value }) => {
                     let formData = new FormData();
@@ -205,6 +208,7 @@
                     font-weight: bold;
                 }
                 .circle {
+                    color: #606266;
                     &:hover {
                         text-decoration: underline;
                         cursor: pointer;

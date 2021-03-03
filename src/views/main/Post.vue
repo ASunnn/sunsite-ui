@@ -21,11 +21,11 @@
         <el-divider></el-divider>
         <div class="info">
             <div>
-                <h3 class="content" @click="onCircleClick()">{{circle}}</h3>
+                <router-link :to="toCircle"><h3 class="content">{{circle}}</h3></router-link>
                 <span class="type">circle</span>
             </div>
             <div>
-                <h3 class="content" @click="onCollectionClick()">{{collection}}</h3>
+                <router-link :to="toCollection"><h3 class="content">{{collection}}</h3></router-link>
                 <span class="type">collection</span>
             </div>
             <div>
@@ -108,6 +108,16 @@
             window.onkeydown = null;
         },
 
+        computed: {
+            toCircle: function () {
+                return {name:"book", params:{name: this.circle}};
+            },
+
+            toCollection: function () {
+                return {name:"pool", params:{seq: this.cId}};
+            }
+        },
+
         watch: {
             $route(to, from) {
                 this.seq = to.params.seq;
@@ -174,14 +184,6 @@
                 }
             },
 
-            onCircleClick: function () {
-                this.$router.push({name:"book", params:{name: this.circle}});
-            },
-
-            onCollectionClick: function () {
-                this.$router.push({name:"pool", params:{seq: this.cId}});
-            },
-
             onIllustratorClick: function (illustrator) {
                 this.$router.push({name:"work", params:{name: illustrator}});
             },
@@ -246,6 +248,15 @@
             text-align: center;
             position: relative;
 
+            .el-image {
+                .el-image__inner {
+                    max-height: calc(100vh - 165px);
+                    max-width: 100%;
+                    height: auto;
+                    width: auto;
+                }
+            }
+
             .area {
                 position: absolute;
                 width: 20%;
@@ -294,6 +305,9 @@
 
         .info {
             padding: 0 5px;
+            a {
+                color: #606266;
+            }
 
             div {
                 margin-bottom: 10px;

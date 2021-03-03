@@ -65,9 +65,10 @@
                     reader.readEntries(function(entries) {
                         self.fileEntryFilter(entries).then(function (files) {
                             if (files.length > 0) {
-                                self.$prompt("Type：", {
+                                self.$prompt("Type : ", {
                                     showClose: false,
-                                    showCancelButton: false
+                                    showCancelButton: false,
+                                    confirmButtonText: 'OK'
                                 }).then(({ value }) => {
                                     self.doUpload(files, value, circle, collection);
                                 }).catch(() => {});

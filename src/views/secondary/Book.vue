@@ -102,9 +102,10 @@
                     let collection = target.firstChild.childNodes[2].innerText; // div -> a -> p
                     let files = data.files;
 
-                    this.$prompt("Illustrator：", {
+                    this.$prompt("Illustrator : ", {
                         showClose: false,
                         showCancelButton: false,
+                        confirmButtonText: 'OK',
                         inputValue: this.name
                     }).then(({ value }) => {
                         this.doUpload(files, value, this.name, collection);
